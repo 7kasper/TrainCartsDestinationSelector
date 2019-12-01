@@ -1,0 +1,16 @@
+# == TrainCartsDestinationSelector ==
+#     Some basic options for the    #
+#     destination selector sign  	#
+# == TrainCartsDestinationSelector ==
+
+# Timeout in seconds before the rest message is displayed.
+# Set to -1 to disable the timeout message.
+timeout: 5
+# Reset selection progress when timeout is displayed?
+reset: true
+# Timeout message:
+message:
+  - '[&6TCDS&0]'
+  - 'Click to'
+  - 'set train'
+  - 'destination'

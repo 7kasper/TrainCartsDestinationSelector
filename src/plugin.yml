@@ -1,0 +1,17 @@
+name: TrainCartsDestinationSelector
+main: nl.kaspermuller.traincartsdestinationselector.TrainCartsDestinationSelector
+version: 0.1
+api-version: 1.14
+depend: [Train_Carts]
+permissions:
+  traincartsdestinationselector.*:
+    description: Gives access to all adminmode commands.
+    children:
+      traincartsdestinationselector.use: true
+      traincartsdestinationselector.make: true
+  traincartsdestinationselector.use:
+    description: Allows the use of traincartsdestination signs.
+    default: true
+  traincartsdestinationselector.make:
+    description: Allows the creation of traincartsdestination signs.
+    default: op
