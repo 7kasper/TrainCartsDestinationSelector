@@ -40,16 +40,16 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
-		if (e.getLine(0).strip().equals("[TCDS]")) {
+		if (e.getLine(0).trim().equals("[TCDS]")) {
 			if (e.getPlayer().hasPermission("traincartsdestinationselector.make")) {
 				Sign sign = (Sign) e.getBlock().getState();
-				if (e.getLine(1).isBlank() && e.getLine(2).isBlank() && e.getLine(3).isBlank()) {
+				if (e.getLine(1).trim().isEmpty() && e.getLine(2).trim().isEmpty() && e.getLine(3).trim().isEmpty()) {
 					e.getPlayer().sendMessage("§eYou built a §fdestination selector§e!");
 					e.getPlayer().sendMessage("§aThis sign allows users to select a train destination.");
 					e.getPlayer().sendMessage("§aUse more signs in a column behind this block to add destinations.");
-					sign.getPersistentDataContainer().set(signKey, PersistentDataType.INTEGER, 0);
+					sign.getPersistentDataContainer().set(signKey, PersistentDataType.INTEGER, STARTATTOP);
 					sign.update();
-					getServer().getScheduler().scheduleSyncDelayedTask(this, () -> cycleSign(sign, STARTATTOP));
+					getServer().getScheduler().scheduleSyncDelayedTask(this, () -> cycleSign(sign, 1));
 				} else {
 					e.getPlayer().sendMessage("§eYou built a §fdestination list§e!");
 					e.getPlayer().sendMessage("§aThis sign adds destinations to the selector.");
@@ -67,7 +67,7 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 			if (e.getPlayer().hasPermission("traincartsdestinationselector.use")) {
 				Sign sign = (Sign) e.getClickedBlock().getState();
 				String destination = cycleSign(sign, 1);
-				e.getPlayer().performCommand("train destination " + destination);
+				if (destination != null && !destination.trim().isEmpty()) e.getPlayer().performCommand("train destination " + destination);
 			} else {
 				e.getPlayer().sendMessage("§4You do not have permission to use traincart selector signs!");
 			}
@@ -76,7 +76,7 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 			if (e.getPlayer().hasPermission("traincartsdestinationselector.use")) {
 				Sign sign = (Sign) e.getClickedBlock().getState();
 				String destination = cycleSign(sign, -1);
-				e.getPlayer().performCommand("train destination " + destination);
+				if (destination != null && !destination.trim().isEmpty()) e.getPlayer().performCommand("train destination " + destination);
 			} else {
 				e.getPlayer().sendMessage("§4You do not have permission to use traincart selector signs!");
 			}
@@ -97,7 +97,7 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 			// Little hack to make going back also possible from starting at top.
 			if (i == STARTATTOP && dir < 0) i = 0;
 			// Depending on the direction, get the next element.
-			i = ((i+dir) % length); if (i < 0) i = length + i;
+			if (length > 0) { i = ((i+dir) % length); if (i < 0) i = length + i; } else { i = 0; }
 			// Show destinations.
 			sign.setLine(0, (length > 0) ? "> " + clampGet(i, length, options) + " <": "No Destinations!");
 			sign.setLine(1, (length > 1) ? clampGet(i+1, length, options): "");
@@ -150,7 +150,7 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 			Sign sign = (Sign) block.getState();
 			if (sign.getLine(0).contains("[TCDS]")) {
 				for (int i = 1; i < 4; i++) {
-					String line = sign.getLine(i).strip();
+					String line = sign.getLine(i).trim();
 					if (!line.isEmpty()) options.add(line);
 				}
 				return true;
