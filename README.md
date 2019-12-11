@@ -15,9 +15,9 @@ Usage ~is~ should be simple and intuative.
 5. Now destinations can be added to the selector by creating destination lists.
    This is done by creating a sign with `[TCDS]` on the first line. The other lines must contain one or more destination. Every line should be a specific destination applicable in `/train destination <destination>`.
    ![Destination List](https://raw.githubusercontent.com/7kasper/TrainCartsDestinationSelector/master/resources/05-destonationlist.png)
-6. More destinations can be added. See the place of the sign. Destination lists only work when attached to a block behind the destination selector, or a block behind a block where another destionation list is attached. Both the left and the right side work. Destinations are added in order of left to right, front to back.
+6. More destinations can be added. See the place of the sign. Destination lists only work when attached to a block behind the destination selector, or a block behind a block where another destination list is attached. Both the left and the right side work. Destinations are added in order of left to right, front to back.
    ![More Destinations](https://raw.githubusercontent.com/7kasper/TrainCartsDestinationSelector/master/resources/06-moredestination.png)
-7. The destination selector now works! Use `right-click` to cycle down and `left-click` to cycle up. The sign essentially runs `/train destionation <selected>` on the player using the sign. This means all the rules and permissions of this command apply. The sign works best when used from inside a train.
+7. The destination selector now works! Use `right-click` to cycle down and `left-click` to cycle up. The sign essentially runs `/train destination <selected>` on the player using the sign. This means all the rules and permissions of this command apply. The sign works best when used from inside a train.
    ![Profit](https://raw.githubusercontent.com/7kasper/TrainCartsDestinationSelector/master/resources/07-profit.png)
    
 ## Permissions
