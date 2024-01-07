@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.sign.Side;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -28,7 +29,12 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 		Material.DARK_OAK_WALL_SIGN,
 		Material.JUNGLE_WALL_SIGN,
 		Material.OAK_WALL_SIGN,
-		Material.SPRUCE_WALL_SIGN
+		Material.SPRUCE_WALL_SIGN,
+		Material.CHERRY_WALL_SIGN,
+		Material.WARPED_WALL_SIGN,
+		Material.BAMBOO_WALL_SIGN,
+		Material.CRIMSON_WALL_SIGN,
+		Material.MANGROVE_WALL_SIGN
 	);
 	private NamespacedKey signKey = new NamespacedKey(this, "TCDS");
 
@@ -67,9 +73,11 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 			if (e.getPlayer().hasPermission("traincartsdestinationselector.use")) {
 				Sign sign = (Sign) e.getClickedBlock().getState();
 				String destination = cycleSign(sign, 1);
-				if (destination != null && !destination.trim().isEmpty()) e.getPlayer().performCommand("train destination " + destination);
-			} else {
-				e.getPlayer().sendMessage("§4You do not have permission to use traincart selector signs!");
+				if (destination != null && !destination.trim().isEmpty()) {
+					e.getPlayer().performCommand("train destination " + destination);
+					// Disable sign editing.
+					e.setCancelled(true);
+				}
 			}
 		}
 		if (e.getAction() == Action.LEFT_CLICK_BLOCK && wallSign.contains(e.getClickedBlock().getType())) {
@@ -77,8 +85,6 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 				Sign sign = (Sign) e.getClickedBlock().getState();
 				String destination = cycleSign(sign, -1);
 				if (destination != null && !destination.trim().isEmpty()) e.getPlayer().performCommand("train destination " + destination);
-			} else {
-				e.getPlayer().sendMessage("§4You do not have permission to use traincart selector signs!");
 			}
 		}
 	}
@@ -99,10 +105,10 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 			// Depending on the direction, get the next element.
 			if (length > 0) { i = ((i+dir) % length); if (i < 0) i = length + i; } else { i = 0; }
 			// Show destinations.
-			sign.setLine(0, (length > 0) ? "> " + clampGet(i, length, options) + " <": "No Destinations!");
-			sign.setLine(1, (length > 1) ? clampGet(i+1, length, options): "");
-			sign.setLine(2, (length > 2) ? clampGet(i+2, length, options): "");
-			sign.setLine(3, (length > 3) ? ((length > 4) ? "...": clampGet(i+3, length, options)): "");
+			sign.getSide(Side.FRONT).setLine(0, (length > 0) ? "> " + clampGet(i, length, options) + " <": "No Destinations!");
+			sign.getSide(Side.FRONT).setLine(1, (length > 1) ? clampGet(i+1, length, options): "");
+			sign.getSide(Side.FRONT).setLine(2, (length > 2) ? clampGet(i+2, length, options): "");
+			sign.getSide(Side.FRONT).setLine(3, (length > 3) ? ((length > 4) ? "...": clampGet(i+3, length, options)): "");
 			// Save iteration.
 			sign.getPersistentDataContainer().set(signKey, PersistentDataType.INTEGER, i);
 			sign.update();
@@ -116,7 +122,7 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 					List<String> lines = getConfig().getStringList("message");
 					for (int j = 0; j < 4; j++) {
 						String line = lines.get(j);
-						if (line != null) sign.setLine(j, line.replaceAll("&", "§"));
+						if (line != null) sign.getSide(Side.FRONT).setLine(j, line.replaceAll("&", "§"));
 					}
 					// Also reset option list
 					if (getConfig().getBoolean("reset")) {
@@ -148,9 +154,9 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 	public boolean addSignOptions(Block block, List<String> options) {
 		if (wallSign.contains(block.getBlockData().getMaterial())) {
 			Sign sign = (Sign) block.getState();
-			if (sign.getLine(0).contains("[TCDS]")) {
+			if (sign.getSide(Side.FRONT).getLine(0).contains("[TCDS]")) {
 				for (int i = 1; i < 4; i++) {
-					String line = sign.getLine(i).trim();
+					String line = sign.getSide(Side.FRONT).getLine(i).trim();
 					if (!line.isEmpty()) options.add(line);
 				}
 				return true;
