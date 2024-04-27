@@ -1,6 +1,6 @@
 name: TrainCartsDestinationSelector
 main: nl.kaspermuller.traincartsdestinationselector.TrainCartsDestinationSelector
-version: 0.3
+version: 0.4
 api-version: 1.20
 depend: [Train_Carts]
 permissions:

@@ -116,19 +116,23 @@ public class TrainCartsDestinationSelector extends JavaPlugin implements Listene
 			if (sign.hasMetadata("timeout")) {
 				getServer().getScheduler().cancelTask(sign.getMetadata("timeout").get(0).asInt());
 			}
+			Block bSign = sign.getBlock();
 			// Put the select message after 5 seconds.
 			if (getConfig().getLong("timeout") > -1) {
 				sign.setMetadata("timeout", new FixedMetadataValue(this, getServer().getScheduler().scheduleSyncDelayedTask(this, ()-> {
-					List<String> lines = getConfig().getStringList("message");
-					for (int j = 0; j < 4; j++) {
-						String line = lines.get(j);
-						if (line != null) sign.getSide(Side.FRONT).setLine(j, line.replaceAll("&", "§"));
+					if (wallSign.contains(bSign.getType())) {
+						Sign signn = (Sign) bSign.getState();
+						List<String> lines = getConfig().getStringList("message");
+						for (int j = 0; j < 4; j++) {
+							String line = lines.get(j);
+							if (line != null) signn.getSide(Side.FRONT).setLine(j, line.replaceAll("&", "§"));
+						}
+						// Also reset option list
+						if (getConfig().getBoolean("reset")) {
+							signn.getPersistentDataContainer().set(signKey, PersistentDataType.INTEGER, STARTATTOP);	
+						}
+						signn.update();
 					}
-					// Also reset option list
-					if (getConfig().getBoolean("reset")) {
-						sign.getPersistentDataContainer().set(signKey, PersistentDataType.INTEGER, STARTATTOP);	
-					}
-					sign.update();
 				}, getConfig().getLong("timeout") * 20)));
 			}
 			// Return the selected option:
